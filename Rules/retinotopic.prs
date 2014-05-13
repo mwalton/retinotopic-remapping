@@ -1,0 +1,184 @@
+//Setup Initial WM contents. 
+(Define Initial_memory_contents (Goal Do choice_task))
+(Define Parameters (Eye Saliency_map Gaussian 1.5 30 0.5 7.5 debug))
+// (Eye Saliency_map BASE_DISTRIBUTION ANGULAR_RES RADIUS WEIGHT DELAY_DEVIATION_MAGNITUDE opt_DEBUG)
+
+//**********************************************************************************************
+;#            BLOCK AND TRIAL MANAGEMENT RULES
+//**********************************************************************************************
+
+(TRIAL_start_block
+If
+(
+	(Goal Do choice_task)
+	(Not (Step ??? ???))
+ )
+Then
+(
+	(Add (Step Start Trial))
+))
+
+
+(TRIAL_start_trial
+If
+(
+	(Goal Do choice_task)
+	(Step Start Trial)
+ )
+Then
+(
+	(Delete (Step Start Trial))
+	(Add (Step Waitfor Visual_Fixation_Onset))
+))
+
+
+(TRIAL_cleanup
+If 
+(
+	(Goal Do choice_task)
+	(Step Cleanup Memory)
+	(Tag ?x ?y)
+)
+Then 
+(
+	(Attend_to Null)
+	(Delete (Tag ?x ?y))
+	(Delete (Step Cleanup Memory))
+))
+
+
+//**********************************************************************************************
+;#              MAIN RULESET
+//**********************************************************************************************
+
+(VIS_visual_Fixation_onset
+If
+(
+	(Goal Do choice_task)
+	(Step Waitfor Visual_Fixation_Onset)
+	(Visual ?fixation Detection Onset)	
+	(Motor Ocular Processor Free)
+)
+Then
+(
+	(Send_to_motor Ocular Perform Move ?fixation)
+	(Add (Tag ?fixation Fixation_symbol))
+	(Delete (Step Waitfor Visual_Fixation_Onset))
+	(Add (Step Waitfor Visual_Cue_Onset))
+))
+
+(VIS_visual_Cue_onset
+If
+(
+	(Goal Do choice_task)
+	(Step Waitfor Visual_Cue_Onset)
+	//(Visual ?cue Detection Onset)
+	(Visual ?cue Color Black)
+)
+Then
+(
+	(Add (Tag ?cue Cue_symbol))
+	(Delete (Step Waitfor Visual_Cue_Onset))
+	(Add (Step Attend Visual_Cue))
+))
+
+(VIS_attend_to_cue
+If
+(
+	(Goal Do choice_task)
+	(Step Attend Visual_Cue)
+	(Tag ?cue Cue_symbol)
+)
+Then
+(
+	//(Attend_to Cue ?cue)
+	(Delete (Step Attend Visual_Cue))
+	(Add (Step Waitfor Visual_Saccade_Target))
+))
+
+(VIS_visual_SaccFix_onset
+If
+(
+	(Goal Do choice_task)
+	(Step Waitfor Visual_Saccade_Target)
+	(Tag ?fixation Fixation_symbol)
+	(Visual ?saccFix Detection Onset)
+	(DIFFERENT ?saccFix ?fixation)
+	(Motor Ocular Processor Free)
+)
+Then
+(
+	(Send_to_motor Ocular Perform Move ?saccFix)
+	(Add (Tag ?saccFix Saccade_target))
+	(Delete (Step Waitfor Visual_Saccade_Target))
+	(Add (Step Waitfor Visual_Stimulus_Onset))
+))
+
+(VIS_visual_stimulus_onset
+If
+(
+	(Goal Do choice_task)
+	(Step Waitfor Visual_Stimulus_Onset)
+	(Visual ?visualstimulus Detection Onset)
+	(Tag ?saccFix Saccade_target)
+	(Tag ?fixation Fixation_symbol)
+	(DIFFERENT ?visualstimulus ?saccFix)
+	(DIFFERENT ?visualstimulus ?fixation)
+)
+Then
+(
+	(Add (Tag ?visualstimulus Visual_Stimulus)) 
+	(Delete (Step Waitfor Visual_Stimulus_Onset))
+	(Add (Step Waitfor Visual_Stimulus_Orientation))
+))
+
+(VIS_visual_stimulus_orientation
+If
+(
+	(Goal Do choice_task)
+	(Step Waitfor Visual_Stimulus_Orientation)
+	(Tag ?visualstimulus Visual_Stimulus)
+	(Visual ?visualstimulus Orientation ?orientation)
+)
+Then
+(
+	(Add (Tag ?orientation Visual_Stimulus_Orientation)) 
+	(Delete (Step Waitfor Visual_Stimulus_Orientation))
+	(Add (Step Make Visual_Response))
+))
+
+//*******************************************************************
+;#************ PARALLEL RESPONSE MAPPING RULES
+//*******************************************************************
+
+(MAN_make_visualresponse_left
+If
+(
+	(Goal Do choice_task)
+	(Step Make Visual_Response)
+	(Tag ??? Visual_Stimulus)
+	(Tag -45 Visual_Stimulus_Orientation)
+	(Motor Manual Preparation Free)
+)
+Then
+(
+	(Send_to_motor Manual Perform Punch F Left Index)
+	(Delete (Step Make Visual_Response))
+	(Add (Step Cleanup Memory))
+))
+
+(MAN_make_visualresponse_right
+If
+(
+	(Goal Do choice_task)
+	(Step Make Visual_Response)
+	(Tag ??? Visual_Stimulus)
+	(Tag 45 Visual_Stimulus_Orientation)
+	(Motor Manual Preparation Free)
+)
+Then
+(
+	(Send_to_motor Manual Perform Punch J Left Index)
+	(Delete (Step Make Visual_Response))
+	(Add (Step Cleanup Memory))
+))
