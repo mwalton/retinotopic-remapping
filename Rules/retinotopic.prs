@@ -91,7 +91,7 @@ If
 )
 Then
 (
-	//(Attend_to Cue ?cue)
+	(Attend_to Cue ?cue)
 	(Delete (Step Attend Visual_Cue))
 	(Add (Step Waitfor Visual_Saccade_Target))
 ))
