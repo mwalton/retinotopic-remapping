@@ -50,7 +50,7 @@ const long intertrialinterval_c = 5000;
 const bool show_debug = true;
 const bool show_states = false;
 
-std::string dataHeader = "\nTASKTYPE,TRIAL,TRIAL_TYPE,PROBE_DELAY,RT,ORIENTATION,RESPONSE,CORRECTRESPONSE,ACCURACY,TAG,RULES";
+std::string dataHeader = "\nTASKTYPE,TRIAL,TRIAL_TYPE,PROBE_DELAY,RT,SACCADE_DURATION,ORIENTATION,RESPONSE,CORRECTRESPONSE,ACCURACY,TAG,RULES";
 
 simple_device::simple_device(const std::string& device_name, Output_tee& ot) :
 		Device_base(device_name, ot), 
@@ -209,7 +209,7 @@ void simple_device::handle_Stop_event()
 	}		
 }
 
-// STATES: {START, START_TRIAL, PRESENT_CUE, REMOVE_CUE, REMOVE_FIXATION, PRESENT_PROBE, WAITING_FOR_RESPONSE, DISCARD_PROBE, SHUTDOWN}
+// STATES: {START, START_TRIAL, PRESENT_CUE, REMOVE_CUE, REMOVE_FIXATION, WAIT_FOR_FIXATION, PRESENT_PROBE, WAITING_FOR_RESPONSE, DISCARD_PROBE, SHUTDOWN}
 
 void simple_device::handle_Delay_event(const Symbol& type, const Symbol& datum, 
 		const Symbol& object_name, const Symbol& property_name, const Symbol& property_value)
@@ -243,9 +243,12 @@ void simple_device::handle_Delay_event(const Symbol& type, const Symbol& datum,
 			if (show_states) show_message("********-->STATE: REMOVE_FIXATION",true);
 			remove_fixation();
             present_saccade_target();
-			state = PRESENT_PROBE;
-            probe_delay = get_probe_delay();
-            schedule_delay_event(250 + probe_delay);
+			state = WAITFOR_EYEMOVE;
+			break;
+        case WAITFOR_EYEMOVE:
+            if (show_states) show_message("********-->STATE: WAITFOR_EYEMOVE",true);
+			//nothing to do, just wait
+			//**note: next state and schedule_delay set by response handler
 			break;
         case PRESENT_PROBE:
             if (show_states) show_message("********-->STATE: PRESENT_PROBE",true);
@@ -432,19 +435,35 @@ void simple_device::present_saccade_target() {
 	set_visual_object_property(sacc_fix_name, Shape_c, Empty_Circle_c);
     set_visual_object_property(sacc_fix_name, Color_c, Gray_c);
     
+    starget_onset = get_time();
+
+    
     if (show_debug) show_message("present_saccade_fixation*", true);
 }
 
-int simple_device::get_probe_delay() {
-    int select_region = rand() % 3;
+void simple_device::handle_Eyemovement_End_event(const Symbol& target_name, GU::Point new_location) {
+    if (show_debug) show_message("*handle_Eyemovement_End_event....",true);
     
-    switch (select_region) {
-        case 0:
-            return 50;
-        case 1:
-            return 250;
-        default:
-            return 400;
+    if (state == WAITFOR_EYEMOVE && new_location == sacc_fix_location) {
+        
+        state = PRESENT_PROBE;
+        saccade_duration = get_time() - starget_onset;
+        
+        int select_delay = rand() % 3;
+        
+        switch (select_delay) {
+            case 0:
+                probe_delay = 50;
+                break;
+            case 1:
+                probe_delay = 250;
+                break;
+            default:
+                probe_delay = 400;
+                break;
+        }
+        
+        schedule_delay_event(probe_delay);
     }
 }
 
@@ -509,7 +528,7 @@ void simple_device::handle_Keystroke_event(const Symbol& key_name)
 	//ostringstream outputString;  //defined in simple_device.h (tls)
 	outputString.str("");
     std::string isCorrect;
-    long rt = get_time() - vstim_onset;;
+    long rt = get_time() - vstim_onset;
 	
 	if(key_name == correct_vresp) {
         isCorrect = "CORRECT";
@@ -528,6 +547,7 @@ void simple_device::handle_Keystroke_event(const Symbol& key_name)
     << " | Initial Fixation: (" << init_fix_location.x << "," << init_fix_location.y << ")"
     << " | Cue Location: (" << cue_location.x << "," << cue_location.y << ")"
     << " | Saccade Target: (" << sacc_fix_location.x << "," << sacc_fix_location.y << ")"
+    << " | Saccade Duration: " << saccade_duration
     << " | Probe Location: (" << probe_location.x << "," << probe_location.y << ")"
     << " | Probe Delay: " << probe_delay
     << " | Probe Orientation: " << probe_orientation
@@ -540,6 +560,7 @@ void simple_device::handle_Keystroke_event(const Symbol& key_name)
     << trial_type << ","
     << probe_delay << ","
     << rt << ","
+    << saccade_duration << ","
     << probe_orientation << ","
     << key_name << ","
     << correct_vresp << ","

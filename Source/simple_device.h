@@ -34,9 +34,10 @@ public:
 	virtual void handle_Delay_event(const Symbol& type, const Symbol& datum, 
 		const Symbol& object_name, const Symbol& property_name, const Symbol& property_value);
 	virtual void handle_Keystroke_event(const Symbol& key_name);
+    virtual void handle_Eyemovement_End_event(const Symbol& target_name, GU::Point new_location);
 			
 private:
-	enum State_e {START, START_TRIAL, PRESENT_CUE, REMOVE_CUE, REMOVE_FIXATION, PRESENT_PROBE, WAITING_FOR_RESPONSE, DISCARD_PROBE, SHUTDOWN};
+	enum State_e {START, START_TRIAL, PRESENT_CUE, REMOVE_CUE, REMOVE_FIXATION, WAITFOR_EYEMOVE, PRESENT_PROBE, WAITING_FOR_RESPONSE, DISCARD_PROBE, SHUTDOWN};
 	State_e state;
     
     Symbol trial_type;
@@ -72,7 +73,7 @@ private:
 	int trial;                 //curent trial number
 	bool vresponse_made;       //whether visual response has been made
 	double vstim_xloc;          //holds x offset of vstim
-	int probe_delay;			//time of blank between fixation and stim onset
+	long probe_delay;			//time of blank between fixation and stim onset
 	
 	Current_mean current_vrt;
 	
@@ -82,6 +83,8 @@ private:
 	std::string condition_string; //holds current condition
 	int n_trials;                 //number of trials run so far
 	long vstim_onset;             //timestamp for visual stimulus onset
+    long starget_onset;             //timestamp for saccade target stimulus
+    long saccade_duration;
 	std::vector <std::string> prspathvector;
 	std::string prsfilenameonly;
 	
@@ -97,7 +100,6 @@ private:
     void present_saccade_target();
 	void present_cue();
 	void remove_cue();
-    int get_probe_delay();
 	void start_trial();
 	void present_probe();
 	void remove_probe();

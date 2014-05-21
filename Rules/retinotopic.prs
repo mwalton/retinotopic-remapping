@@ -1,5 +1,28 @@
 //Setup Initial WM contents. 
+
+
 (Define Initial_memory_contents (Goal Do choice_task))
+
+(Define Named_Location Quadrant_1_Subquadrant_1 0 0)
+(Define Named_Location Quadrant_1_Subquadrant_2 0 0)
+(Define Named_Location Quadrant_1_Subquadrant_3 0 0)
+(Define Named_Location Quadrant_1_Subquadrant_4 0 0)
+
+(Define Named_Location Quadrant_2_Subquadrant_1 0 0)
+(Define Named_Location Quadrant_2_Subquadrant_2 0 0)
+(Define Named_Location Quadrant_2_Subquadrant_3 0 0)
+(Define Named_Location Quadrant_2_Subquadrant_4 0 0)
+
+(Define Named_Location Quadrant_3_Subquadrant_1 0 0)
+(Define Named_Location Quadrant_3_Subquadrant_2 0 0)
+(Define Named_Location Quadrant_3_Subquadrant_3 0 0)
+(Define Named_Location Quadrant_3_Subquadrant_4 0 0)
+
+(Define Named_Location Quadrant_4_Subquadrant_1 0 0)
+(Define Named_Location Quadrant_4_Subquadrant_2 0 0)
+(Define Named_Location Quadrant_4_Subquadrant_3 0 0)
+(Define Named_Location Quadrant_4_Subquadrant_4 0 0)
+
 (Define Parameters (Eye Saliency_map Gaussian 1.5 30 0.5 7.5 debug))
 // (Eye Saliency_map BASE_DISTRIBUTION ANGULAR_RES RADIUS WEIGHT DELAY_DEVIATION_MAGNITUDE opt_DEBUG)
 

@@ -5,36 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>4EBD533E-98F2-44DB-ABA3-C71806E06795</string>
+	<string>22602CC2-99B1-4CCD-A95D-41E65BBD334B</string>
 	<key>IDESourceControlProjectName</key>
 	<string>retinotopic_attn</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>565F84BF-6958-4794-9205-5218561CA5B9</key>
-		<string>https://github.com/mwalton/endogenous-attn-task.git</string>
+		<key>E355D858-C877-4EA5-BCC5-7AE50214E111</key>
+		<string>https://github.com/mwalton/retinotopic-remapping.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>retinotopic_attn.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>565F84BF-6958-4794-9205-5218561CA5B9</key>
+		<key>E355D858-C877-4EA5-BCC5-7AE50214E111</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/mwalton/endogenous-attn-task.git</string>
+	<string>https://github.com/mwalton/retinotopic-remapping.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>565F84BF-6958-4794-9205-5218561CA5B9</string>
+	<string>E355D858-C877-4EA5-BCC5-7AE50214E111</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>565F84BF-6958-4794-9205-5218561CA5B9</string>
+			<string>E355D858-C877-4EA5-BCC5-7AE50214E111</string>
 			<key>IDESourceControlWCCName</key>
-			<string>retinotopic-task</string>
+			<string>retinotopic-remapping</string>
 		</dict>
 	</array>
 </dict>
