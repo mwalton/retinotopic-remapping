@@ -3,26 +3,6 @@
 
 (Define Initial_memory_contents (Goal Do choice_task))
 
-(Define Named_Location Quadrant_1_Subquadrant_1 0 0)
-(Define Named_Location Quadrant_1_Subquadrant_2 0 0)
-(Define Named_Location Quadrant_1_Subquadrant_3 0 0)
-(Define Named_Location Quadrant_1_Subquadrant_4 0 0)
-
-(Define Named_Location Quadrant_2_Subquadrant_1 0 0)
-(Define Named_Location Quadrant_2_Subquadrant_2 0 0)
-(Define Named_Location Quadrant_2_Subquadrant_3 0 0)
-(Define Named_Location Quadrant_2_Subquadrant_4 0 0)
-
-(Define Named_Location Quadrant_3_Subquadrant_1 0 0)
-(Define Named_Location Quadrant_3_Subquadrant_2 0 0)
-(Define Named_Location Quadrant_3_Subquadrant_3 0 0)
-(Define Named_Location Quadrant_3_Subquadrant_4 0 0)
-
-(Define Named_Location Quadrant_4_Subquadrant_1 0 0)
-(Define Named_Location Quadrant_4_Subquadrant_2 0 0)
-(Define Named_Location Quadrant_4_Subquadrant_3 0 0)
-(Define Named_Location Quadrant_4_Subquadrant_4 0 0)
-
 (Define Parameters (Eye Saliency_map Gaussian 1.5 30 0.5 7.5 debug))
 // (Eye Saliency_map BASE_DISTRIBUTION ANGULAR_RES RADIUS WEIGHT DELAY_DEVIATION_MAGNITUDE opt_DEBUG)
 
@@ -117,6 +97,18 @@ Then
 	(Attend_to Cue ?cue)
 	(Delete (Step Attend Visual_Cue))
 	(Add (Step Waitfor Visual_Saccade_Target))
+	(Add (Step Maintain Attention))
+))
+
+(Maintain_attention
+If
+(
+	(Goal Do choice_task)
+	(Step Maintain Attention)
+)
+Then
+(
+	(Attend_to Previous)
 ))
 
 (VIS_visual_SaccFix_onset
@@ -187,6 +179,7 @@ Then
 (
 	(Send_to_motor Manual Perform Punch F Left Index)
 	(Delete (Step Make Visual_Response))
+	(Delete (Step Maintain Attention))
 	(Add (Step Cleanup Memory))
 ))
 
@@ -203,5 +196,6 @@ Then
 (
 	(Send_to_motor Manual Perform Punch J Left Index)
 	(Delete (Step Make Visual_Response))
+	(Delete (Step Maintain Attention))
 	(Add (Step Cleanup Memory))
 ))
