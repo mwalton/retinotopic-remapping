@@ -3,7 +3,7 @@
 
 (Define Initial_memory_contents (Goal Do choice_task))
 
-(Define Parameters (Eye Saliency_map Gaussian 1.5 30 0.5 7.5 debug))
+(Define Parameters (Eye Saliency_map Gaussian 1.5 30 .1 7.5))
 // (Eye Saliency_map BASE_DISTRIBUTION ANGULAR_RES RADIUS WEIGHT DELAY_DEVIATION_MAGNITUDE opt_DEBUG)
 
 //**********************************************************************************************
@@ -97,6 +97,19 @@ Then
 	(Attend_to Cue ?cue)
 	(Delete (Step Attend Visual_Cue))
 	(Add (Step Waitfor Visual_Saccade_Target))
+))
+
+(Start_Maintaining_attention
+If
+(
+	(Goal Do choice_task)
+	(Tag ?cue Cue_symbol)
+	(Visual ?cueObj Status Disappearing)
+	(Step Waitfor Visual_Saccade_Target)
+	(EQUAL ?cue ?cueObj)
+)
+Then
+(
 	(Add (Step Maintain Attention))
 ))
 

@@ -558,7 +558,7 @@ void simple_device::handle_Keystroke_event(const Symbol& key_name)
     DataOutputString << "RETINOTOPICTASK" << ","
     << trial << ","
     << trial_type << ","
-    << probe_delay << "ms,"
+    << probe_delay << ","
     << rt << ","
     << saccade_duration << ","
     << probe_orientation << ","
